@@ -1,0 +1,395 @@
+
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ciallo Counter ✦</title>
+<style>
+:root {
+  --pink: #ed6ca3;
+  --ink: #594258;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  min-height: 100vh;
+  overflow: hidden;
+  cursor: pointer;
+  user-select: none;
+  font-family: "Noto Sans TC", system-ui, sans-serif;
+  color: var(--ink);
+  background:
+    radial-gradient(ellipse at 12% 12%, #ffe0ed, transparent 36%),
+    radial-gradient(ellipse at 87% 18%, #e8ddff, transparent 34%),
+    linear-gradient(145deg, #fffaf4, #fff0f7 60%, #f2edff);
+}
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: .22;
+  background-image: radial-gradient(#d58fb4 .8px, transparent .8px);
+  background-size: 19px 19px;
+}
+.top {
+  position: fixed;
+  z-index: 20;
+  top: 18px;
+  left: 20px;
+  right: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+.brand { font-weight: 950; }
+.brand b { color: var(--pink); }
+.badge {
+  border: 1px solid #f2c4d9;
+  background: #ffffffb8;
+  border-radius: 99px;
+  padding: 9px 13px;
+  font-size: 12px;
+  font-weight: 800;
+}
+.center {
+  position: absolute;
+  z-index: 2;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: min(900px, 94vw);
+  text-align: center;
+  pointer-events: none;
+}
+.eyebrow {
+  display: inline-block;
+  padding: 7px 13px;
+  border: 1px solid white;
+  border-radius: 99px;
+  background: #fff9;
+  color: #b35b86;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: .1em;
+}
+h1 {
+  font-size: clamp(45px, 9vw, 92px);
+  line-height: 1.02;
+  letter-spacing: -.06em;
+  margin: 20px 0 10px;
+  text-shadow: 0 4px white, 0 8px 24px #e8a3c53b;
+}
+h1 em { font-style: normal; color: var(--pink); }
+.sub {
+  font-size: clamp(13px, 2vw, 17px);
+  line-height: 1.8;
+  color: #98778e;
+  margin: 0 0 24px;
+}
+.counter {
+  display: inline-flex;
+  align-items: center;
+  gap: 17px;
+  justify-content: center;
+  min-width: 205px;
+  padding: 14px 22px;
+  background: #fffdf7dc;
+  border: 1px solid white;
+  border-radius: 25px;
+  box-shadow: 0 14px 44px #c879a51c;
+}
+.num {
+  font-size: clamp(38px, 6vw, 54px);
+  font-weight: 1000;
+  line-height: 1;
+  color: var(--pink);
+  font-variant-numeric: tabular-nums;
+}
+.label {
+  font-size: 10px;
+  letter-spacing: .16em;
+  color: #a8879b;
+  font-weight: 900;
+  margin-top: 4px;
+}
+.hint { margin-top: 22px; font-size: 13px; color: #a18399; }
+.hint strong { color: #e2649c; }
+.spark {
+  position: fixed;
+  z-index: 1;
+  pointer-events: none;
+  font-size: clamp(22px, 4vw, 40px);
+  color: #f5a4c7;
+  animation: floaty 5s ease-in-out infinite;
+}
+.s1 { left: 12%; top: 28%; }
+.s2 { right: 14%; top: 30%; color: #bba7f5; animation-delay: -1.7s; }
+.s3 { left: 18%; bottom: 18%; color: #a7dfd1; animation-delay: -2.8s; }
+.s4 { right: 18%; bottom: 19%; animation-delay: -.7s; }
+.footer {
+  position: fixed;
+  z-index: 20;
+  bottom: 18px;
+  left: 15px;
+  right: 15px;
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  pointer-events: none;
+}
+.mini {
+  border: 1px solid #f0d5e3;
+  background: #fff9;
+  border-radius: 99px;
+  padding: 8px 12px;
+  font-size: 11px;
+  color: #98788e;
+}
+.fly {
+  position: fixed;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  white-space: nowrap;
+  pointer-events: none;
+  animation: fly 3s cubic-bezier(.15,.65,.25,1) forwards;
+}
+.avatar {
+  width: 76px;
+  height: 76px;
+  border-radius: 23px;
+  border: 3px solid white;
+  box-shadow: 0 7px 20px #8f648b30;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  flex: none;
+  background: var(--bg, #f8c9de);
+}
+.avatar img { width: 100%; height: 100%; object-fit: cover; }
+.initial { font-size: 26px; font-weight: 1000; color: white; }
+.bubble {
+  padding: 10px 15px;
+  border: 2px solid white;
+  border-radius: 18px;
+  background: #fffdf8;
+  color: #e35e99;
+  font-size: clamp(15px, 2.4vw, 23px);
+  font-weight: 1000;
+  box-shadow: 0 7px 20px #a46c9020;
+}
+.bubble small {
+  display: block;
+  margin-bottom: 2px;
+  font-size: 10px;
+  color: #a8879b;
+}
+@keyframes fly {
+  0% { transform: translate(-12vw, 12px) rotate(-3deg); opacity: 0; }
+  10% { opacity: 1; }
+  80% { opacity: 1; }
+  100% { transform: translate(115vw, -35px) rotate(3deg); opacity: 0; }
+}
+@keyframes floaty {
+  0%, 100% { transform: translateY(0) rotate(-5deg); }
+  50% { transform: translateY(-16px) rotate(7deg); }
+}
+@media (max-width: 600px) {
+  .top { top: 13px; left: 13px; right: 13px; }
+  .brand { font-size: 13px; }
+  .badge { padding: 8px 10px; }
+  .avatar { width: 60px; height: 60px; }
+  .fly { gap: 8px; }
+  .bubble { padding: 8px 11px; }
+}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="brand">✦ <b>Ciallo</b> Counter
+    <span style="color:#8e7dbb">/ 柚子社應援版</span>
+  </div>
+  <div class="badge">點擊任意位置 ✧</div>
+</header>
+
+<span class="spark s1">✦</span>
+<span class="spark s2">✧</span>
+<span class="spark s3">♡</span>
+<span class="spark s4">✦</span>
+
+<main class="center">
+  <div class="eyebrow">CAFÉ STELLA & REAPER'S BUTTERFLIES</div>
+  <h1>
+    <em>Ciallo</em>!<br>
+    <span style="font-size:.58em;letter-spacing:-.035em">
+      (∠・ω&lt; )⌒☆
+    </span>
+  </h1>
+  <p class="sub">
+    讓可愛的 Ciallo 飄滿整個畫面。<br>
+    點擊任意位置，隨機呼叫一位角色！
+  </p>
+  <div class="counter">
+    <div>
+      <div class="num" id="count">0</div>
+      <div class="label">CIALLO COUNT</div>
+    </div>
+    <div style="font-size:29px">🎀</div>
+  </div>
+  <div class="hint">
+    ♡ <strong>點擊螢幕任意位置</strong> 觸發角色 Ciallo ♡
+  </div>
+</main>
+
+<footer class="footer">
+  <span class="mini">✦ 隨機角色</span>
+  <span class="mini">✦ 漂浮動畫</span>
+  <span class="mini">✦ GitHub Pages</span>
+</footer>
+
+<script>
+// 素材路徑：
+// assets/characters/natsume.png
+// assets/audio/natsume.mp3
+// 其餘角色依照下方 id 命名。
+
+const characters = [
+  { id: "natsume", name: "四季ナツメ", initial: "夏", color: "#e9a4c2" },
+  { id: "kanna", name: "明月栞那", initial: "栞", color: "#b6a6ed" },
+  { id: "nozomi", name: "墨染希", initial: "希", color: "#8fcfc5" },
+  { id: "ai", name: "火打谷愛衣", initial: "愛", color: "#f1c17f" },
+  { id: "suzune", name: "汐山涼音", initial: "涼", color: "#f19ca8" }
+];
+
+let count = 0;
+let previousIndex = -1;
+const countEl = document.getElementById("count");
+
+function chooseCharacter() {
+  let index;
+  do {
+    index = Math.floor(Math.random() * characters.length);
+  } while (characters.length > 1 && index === previousIndex);
+
+  previousIndex = index;
+  return characters[index];
+}
+
+// 找不到角色語音時播放提示音。
+// 注意：這不是官方角色語音。
+function playFallbackChime() {
+  try {
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContext) return;
+
+    const ctx = new AudioContext();
+    const start = ctx.currentTime;
+
+    [659.25, 783.99, 987.77].forEach((freq, i) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      const t = start + i * 0.095;
+
+      osc.type = "sine";
+      osc.frequency.setValueAtTime(freq, t);
+      gain.gain.setValueAtTime(0.0001, t);
+      gain.gain.exponentialRampToValueAtTime(0.10, t + 0.025);
+      gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.18);
+
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(t);
+      osc.stop(t + 0.2);
+    });
+
+    setTimeout(() => ctx.close(), 700);
+  } catch (error) {
+    console.info("無法播放提示音", error);
+  }
+}
+
+function spawnCiallo(x, y, character) {
+  const item = document.createElement("div");
+  item.className = "fly";
+
+  item.style.top = Math.max(
+    85,
+    Math.min(window.innerHeight - 115, y - 36 + Math.random() * 40 - 20)
+  ) + "px";
+
+  item.style.left = Math.max(
+    0,
+    Math.min(window.innerWidth * 0.25, x - 40)
+  ) + "px";
+
+  item.style.setProperty("--bg", character.color);
+
+  const avatar = document.createElement("div");
+  avatar.className = "avatar";
+
+  const img = document.createElement("img");
+  img.src = `assets/characters/${character.id}.png`;
+  img.alt = character.name;
+
+  img.onerror = () => {
+    img.remove();
+    const initial = document.createElement("span");
+    initial.className = "initial";
+    initial.textContent = character.initial;
+    avatar.appendChild(initial);
+  };
+
+  avatar.appendChild(img);
+
+  const bubble = document.createElement("div");
+  bubble.className = "bubble";
+
+  const name = document.createElement("small");
+  name.textContent = character.name;
+
+  const text = document.createElement("span");
+  text.textContent = "Ciallo (∠・ω< )⌒☆";
+
+  bubble.append(name, text);
+  item.append(avatar, bubble);
+  document.body.appendChild(item);
+
+  item.addEventListener("animationend", () => item.remove(), {
+    once: true
+  });
+
+  // 每位角色對應自己的 MP3 檔。
+  const audio = new Audio(`assets/audio/${character.id}.mp3`);
+  audio.volume = 0.9;
+
+  let fallbackPlayed = false;
+  function fallbackOnce() {
+    if (fallbackPlayed) return;
+    fallbackPlayed = true;
+    playFallbackChime();
+  }
+
+  audio.addEventListener("error", fallbackOnce, { once: true });
+  audio.play().catch(fallbackOnce);
+}
+
+// 點擊頁面任意位置都會觸發。
+document.addEventListener("pointerdown", (event) => {
+  count += 1;
+  countEl.textContent = count.toLocaleString("en-US");
+
+  spawnCiallo(
+    event.clientX,
+    event.clientY,
+    chooseCharacter()
+  );
+});
+</script>
+</body>
+</html>
